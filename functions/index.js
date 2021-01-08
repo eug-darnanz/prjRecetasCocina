@@ -1,3 +1,4 @@
+//Creator: Diego Arnnanz Alvaro
 const functions = require('firebase-functions');
 
 const {
@@ -32,10 +33,10 @@ app.intent('Default Welcome Intent', (conv, params) => {
         Busca la receta que te interesa y intenta cocinarla.  \n`,
         subtitle: 'Aquí encontraras recetas de todo tipo',
         title: 'Recetas de cocina para todo el mundo',
-        buttons: new Button({
+        /*buttons: new Button({
             title: 'This is a button',
             url: 'https://assistant.google.com/',
-        }),
+        }),*/
         image: new Image({
         url: HOSTING + 'recetasLogo.png',
         alt: 'Recetas de cocina logo',
@@ -43,7 +44,7 @@ app.intent('Default Welcome Intent', (conv, params) => {
         display: 'CROPPED',
         }));
     /*conv.ask('Which response would you like to see next?');*/
-    conv.ask(new Suggestions(['Cocina Española','Suggestion 2']));
+    conv.ask(new Suggestions(['Entrante','Plato principal','Segundo palto']));
 });
-//Cosa de prueba 
+
 exports.fulfillment = functions.https.onRequest(app);
