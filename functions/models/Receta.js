@@ -17,6 +17,9 @@ class Receta {
         this.last_update = last_update;
         this.languages = languages;
     }
+    constructor(name){
+        this.name=name;
+    }
 
     // set y get de las variables del modelo
     set name(name) {

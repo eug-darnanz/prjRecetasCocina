@@ -9,11 +9,28 @@ const {
     BasicCard,
     Button,
     Suggestions,
+    BrowseCarousel,
+    BrowseCarouselItem,
 } = require('actions-on-google');
 
 const app = dialogflow();
 const HOSTING = 'https://conversational-ai.eu/diego/hosting/img/';
-const data = 'https://conversational-ai.eu/diego/hosting/data/recetasP.json'
+const HOSTINGData = 'https://conversational-ai.eu/diego/hosting/data/recetasP.json';
+const data ='../public/data/recetasP.json'
+
+function loadModel(){
+    let fs = require('fs');
+    let recetas;
+    fs.readFileSync(data, (err, data) => {
+        if (err) throw err;
+        recetas = JSON.parse(data);
+    });
+    //let rawdata = fs.readFile(data);
+    //let recetas = JSON.parse(rawdata);
+    return recetas;
+}
+
+const recetas = loadModel();
 
 /*app.intent('Default Welcome Intent', (conv, params) => {
     if (params.nombre){
@@ -45,6 +62,27 @@ app.intent('Default Welcome Intent', (conv, params) => {
         }));
     /*conv.ask('Which response would you like to see next?');*/
     conv.ask(new Suggestions(['Entrante','Plato principal','Segundo palto']));
+});
+app.intent('Entrante', (conv, params) => {
+    conv.ask(`Esto es una prueba.`);
+    conv.ask(new BrowseCarousel({
+        items: [
+            new BrowseCarouselItem({
+            title: recetas[1].name,
+            url: recetas[1].url,
+            description: recetas[1].description,
+            image: new Image({
+              url: recetas[1].img,
+              alt: 'Image alternate text',
+            }),
+            footer: 'Item 1 footer',
+          })
+          
+        ]
+      }));
+    /*for(let i=0; i<recetas.length; i++){
+        conv.ask(recetas[i].name);
+    }*/
 });
 
 exports.fulfillment = functions.https.onRequest(app);
