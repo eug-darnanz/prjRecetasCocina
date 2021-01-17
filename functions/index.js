@@ -18,20 +18,54 @@ const HOSTING = 'https://conversational-ai.eu/diego/hosting/img/';
 const HOSTINGData = 'https://conversational-ai.eu/diego/hosting/data/recetasP.json';
 const data ='../public/data/recetasP.json'
 
+//Cargamos en un array las recetas del archivo JSON
 function loadModel(){
     let fs = require('fs');
-    let recetas;
-    fs.readFileSync(data, (err, data) => {
-        if (err) throw err;
-        recetas = JSON.parse(data);
-    });
-    //let rawdata = fs.readFile(data);
-    //let recetas = JSON.parse(rawdata);
+    
+    let rawdata = fs.readFileSync(data);
+    let recetas = JSON.parse(rawdata);
+
     return recetas;
-}
+};
 
 const recetas = loadModel();
 
+
+//Función que devuelve un BrowseCarousel de recetas en función del filtro
+function filterBrowseCarousel(filter){
+    let items = [];
+    for(let i=0; i<recetas.length; i++){
+        if(recetas[i].meal_type==filter){
+            items.push (
+                new BrowseCarouselItem({
+                    title: recetas[i].name,
+                    url: recetas[i].url,
+                    description: recetas[i].description,
+                    image: new Image({
+                        url: recetas[i].img,
+                        alt: recetas[i].name
+                    }),
+                }),
+            )
+        }
+    }
+    return new BrowseCarousel({
+        title: filter,
+        items: items
+    });
+};
+
+//Función que devuelbe un array con las recetas en función del un filtro
+function filterSuggestions(filter){
+    let items = [];
+    for(let i=0; i<recetas.length; i++){
+        if(recetas[i].meal_type==filter){
+            items.push(recetas[i].name);
+        }
+    }
+    console.log(items);
+    return items;
+}
 /*app.intent('Default Welcome Intent', (conv, params) => {
     if (params.nombre){
         conv.ask(`Hola, ${params.nombre}`);
@@ -43,6 +77,7 @@ const recetas = loadModel();
         conv.ask('Hola, desconocido');
     }
 });*/
+//Intent de incio muestra una BasicCard con información de la aplicación
 app.intent('Default Welcome Intent', (conv, params) => {
     conv.ask(`Bienvenido. Que recetas quieres buscar?.`);
     conv.ask(new BasicCard({
@@ -50,39 +85,39 @@ app.intent('Default Welcome Intent', (conv, params) => {
         Busca la receta que te interesa y intenta cocinarla.  \n`,
         subtitle: 'Aquí encontraras recetas de todo tipo',
         title: 'Recetas de cocina para todo el mundo',
-        /*buttons: new Button({
-            title: 'This is a button',
-            url: 'https://assistant.google.com/',
-        }),*/
         image: new Image({
         url: HOSTING + 'recetasLogo.png',
         alt: 'Recetas de cocina logo',
         }),
         display: 'CROPPED',
         }));
-    /*conv.ask('Which response would you like to see next?');*/
     conv.ask(new Suggestions(['Entrante','Plato principal','Segundo palto']));
 });
+
+//Mostrar las recetas clasificadas como entrantes
 app.intent('Entrante', (conv, params) => {
-    conv.ask(`Esto es una prueba.`);
-    conv.ask(new BrowseCarousel({
-        items: [
-            new BrowseCarouselItem({
-            title: recetas[1].name,
-            url: recetas[1].url,
-            description: recetas[1].description,
-            image: new Image({
-              url: recetas[1].img,
-              alt: 'Image alternate text',
-            }),
-            footer: 'Item 1 footer',
-          })
-          
-        ]
-      }));
-    /*for(let i=0; i<recetas.length; i++){
-        conv.ask(recetas[i].name);
-    }*/
+    //let recipeSuggestions = filterSuggestions('Entrante');
+    conv.ask(`A quí podras encontrar diferectes platos para entrante.`);
+    conv.ask(filterBrowseCarousel('Entrante'));
+    conv.ask(new Suggestions('Volver'));
+    //conv.ask(new Suggestions(recipeSuggestions));
 });
+
+//Mostrar las recetas clasificadas como plato principal
+app.intent('Plato principal', (conv, params) => {
+    conv.ask(`A quí podras encontrar diferectes platos para plato principal.`);
+    conv.ask(filterBrowseCarousel('Plato principal'));
+    conv.ask(new Suggestions('Volver'));
+    //conv.ask(new Suggestions(filterSuggestions('Plato principal')))
+});
+
+//Mostrar las recetas clasificadas como segundo plato
+app.intent('Segundo palto', (conv, params) => {
+    conv.ask(`A quí podras encontrar diferectes platos para segundo plato.`);
+    conv.ask(filterBrowseCarousel('Segundo palto'));
+    conv.ask(new Suggestions('Volver'));
+    //conv.ask(new Suggestions(filterSuggestions('Segundo palto')));
+});
+
 
 exports.fulfillment = functions.https.onRequest(app);

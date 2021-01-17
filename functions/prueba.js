@@ -4,6 +4,12 @@ const data ='../public/data/recetasP.json'
 function loadModel(){
     let fs = require('fs');
     
+    //let recetas;
+    /*fs.readFile(data, (err, data) => {
+        if (err) throw err;
+        recetas = JSON.parse(data);
+    });*/
+    
     let rawdata = fs.readFileSync(data);
     let recetas = JSON.parse(rawdata);
 
