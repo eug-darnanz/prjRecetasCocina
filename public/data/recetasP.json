@@ -41,7 +41,7 @@
       "Popular en Primavera-Verano",
       "Sin cocción"
     ],
-    "meal_type": "Entrante",
+    "meal_type": "Segundo palto",
     "difficulty": 1,
     "time": 45,
     "dinners": 8,
@@ -179,7 +179,7 @@
       "Recomendada para vegetarianos",
       "Al horno"
     ],
-    "meal_type": "Entrante",
+    "meal_type": "Segundo palto",
     "difficulty": 1,
     "time": 45,
     "dinners": 2,
@@ -549,7 +549,7 @@
       "Coste barato",
       "Al horno"
     ],
-    "meal_type": "Plato principal",
+    "meal_type": "Segundo palto",
     "difficulty": 1,
     "time": 30,
     "dinners": 2,
