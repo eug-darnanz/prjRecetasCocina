@@ -238,7 +238,7 @@ app.intent('Entrante', (conv) => {
     conv.ask(new SimpleResponse({
         text: 'Aquí podras encontrar diferentes platos para entrante.',
         speech: '<speak><emphasis level="moderate">Aquí podras encontrar diferentes platos para entrante.</emphasis></speak>'
-    }))
+    }));
     conv.ask(filterCarousel('Entrante'));
     conv.ask(new Suggestions('Volver'));
 });
@@ -248,7 +248,7 @@ app.intent('PlatoPrincipal', (conv) => {
     conv.ask(new SimpleResponse({
         text: 'Aquí podras encontrar diferectes platos para plato principal.',
         speech: '<speak><emphasis level="moderate">Aquí podras encontrar diferectes platos para plato principal.</emphasis></speak>'
-    }))
+    }));
     conv.ask(filterCarousel('Plato principal'));
     conv.ask(new Suggestions('Volver'));
 });
@@ -258,7 +258,7 @@ app.intent('SegundoPalto', (conv) => {
     conv.ask(new SimpleResponse({
         text: 'Aquí podras encontrar diferentes platos para segundo plato.',
         speech: '<speak><emphasis level="moderate">Aquí podras encontrar diferentes platos para segundo plato.</emphasis></speak>'
-    }))
+    }));
     conv.ask(filterCarousel('Segundo palto'));
     conv.ask(new Suggestions('Volver'));
 });
@@ -284,7 +284,7 @@ app.intent('Receta', (conv, params, option) => {
                 }),
                 display: 'DEFAULT',
             }));
-            conv.ask(new LinkOutSuggestion({name: 'Receta url', url: receta.url}))
+            conv.ask(new LinkOutSuggestion({name: 'Receta url', url: receta.url}));
         }
     }else if(option){ //Recibe una posición de Carousel a través de un evento de DialogFlow
         let receta = getReceta(items[option].title);
@@ -304,7 +304,7 @@ app.intent('Receta', (conv, params, option) => {
                 }),
                 display: 'DEFAULT',
             }));
-            conv.ask(new LinkOutSuggestion({name: 'Receta url', url: receta.url}))
+            conv.ask(new LinkOutSuggestion({name: 'Receta url', url: receta.url}));
         }
     }else{
         conv.ask(`Lo sentimos, no encontramos la receta que desea buscar`);
@@ -317,7 +317,7 @@ app.intent('RecetasLargas', (conv) => {
     conv.ask(new SimpleResponse({
         text: 'Aquí podras encontrar diferentes recetas largas.',
         speech: '<speak><emphasis level="moderate">Aquí podras encontrar diferentes recetas largas.</emphasis></speak>'
-    }))
+    }));
     conv.ask(filterCarouselLongTime(30));
     conv.ask(new Suggestions('Volver'));
 });
@@ -327,7 +327,7 @@ app.intent('RecetasCortas', (conv) => {
     conv.ask(new SimpleResponse({
         text: 'Aquí podras encontrar diferentes recetas cortas.',
         speech: '<speak><emphasis level="moderate">Aquí podras encontrar diferentes recetas cortas</emphasis></speak>'
-    }))
+    }));
     conv.ask(filterCarouselShortTime(30));
     conv.ask(new Suggestions('Volver'));
 });
