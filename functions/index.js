@@ -12,6 +12,7 @@ const {
     BrowseCarousel,
     BrowseCarouselItem,
     LinkOutSuggestion,
+    SimpleResponse,
 } = require('actions-on-google');
 
 const app = dialogflow();
@@ -30,6 +31,7 @@ function loadModel(){
 };
 
 const recetas = loadModel();
+let items = {};
 
 //Función que devuelve un BrowseCarousel de recetas en función del filtro
 function filterBrowseCarousel(filter){
@@ -55,12 +57,116 @@ function filterBrowseCarousel(filter){
     });
 };
 
+//Función que devuelve un Carousel de recetas en función del tiempo de la receta
+function filterBrowseCarouselLongTime(filter){
+    let items = [];
+    for(let i=0; i<recetas.length; i++){
+        if(recetas[i].time>filter){
+            items.push (
+                new BrowseCarouselItem({
+                    title: recetas[i].name,
+                    url: recetas[i].url,
+                    image: new Image({
+                        url: recetas[i].img,
+                        alt: recetas[i].name,
+
+                    }),
+                }),
+            )
+        }
+    }
+    return new BrowseCarousel({
+        title: filter,
+        items: items
+    });
+};
+
+//Función que devuelve un Carousel de recetas en función del tiempo de la receta
+function filterBrowseCarouselShortTime(filter){
+    let items = [];
+    for(let i=0; i<recetas.length; i++){
+        if(recetas[i].time<=filter){
+            items.push (
+                new BrowseCarouselItem({
+                    title: recetas[i].name,
+                    url: recetas[i].url,
+                    image: new Image({
+                        url: recetas[i].img,
+                        alt: recetas[i].name,
+
+                    }),
+                }),
+            )
+        }
+    }
+    return new BrowseCarousel({
+        title: filter,
+        items: items
+    });
+};
+
 //Función que devuelve un Carousel de recetas en función del filtro
 function filterCarousel(filter){
-    let items = {};
+    items = {};
     let index=0;
     for(let i=0; i<recetas.length; i++){
         if(recetas[i].meal_type==filter){
+            items[index] = {
+                optionInfo: {
+                    key: recetas.name,
+                    synonyms: recetas[i].name,
+                  },
+                title: recetas[i].name,
+                url: recetas[i].url,
+                image: new Image({
+                    url: recetas[i].img,
+                    alt: recetas[i].name,
+
+                }),
+            }
+            index++;
+        }
+    }
+    return new Carousel({
+        title: filter,
+        items: items
+    });
+};
+
+//Función que devuelve un Carousel de recetas en función del tiempo de la receta
+function filterCarouselLongTime(filter){
+    items = {};
+    let index=0;
+    for(let i=0; i<recetas.length; i++){
+        if(recetas[i].time>filter){
+            items[index] = {
+                optionInfo: {
+                    key: recetas.name,
+                    synonyms: recetas[i].name,
+                  },
+                title: recetas[i].name,
+                url: recetas[i].url,
+                image: new Image({
+                    url: recetas[i].img,
+                    alt: recetas[i].name,
+
+                }),
+            }
+            index++;
+        }
+    }
+    return new Carousel({
+        title: filter,
+        items: items
+    });
+};
+
+//Función que devuelve un Carousel de recetas en función del tiempo de la receta
+function filterCarouselShortTime(filter){
+    items = {};
+    let index=0;
+    for(let i=0; i<recetas.length; i++){
+        if(recetas[i].time<=filter){
             items[index] = {
                 optionInfo: {
                     key: recetas.name,
@@ -105,17 +211,6 @@ function getReceta(receta){
     return "";
 }
 
-/*app.intent('Default Welcome Intent', (conv, params) => {
-    if (params.nombre){
-        conv.ask(`Hola, ${params.nombre}`);
-        conv.ask(new Image({
-            url: HOSTING + 'recetasLogo.png',
-            alt: 'A bot',
-        }));
-    }else {
-        conv.ask('Hola, desconocido');
-    }
-});*/
 //Intent de incio muestra una BasicCard con información de la aplicación
 app.intent('Default Fallback Intent', (conv) => {
     conv.ask(`Losiento, no le he entendido. Qué receta desea buscar?`);
@@ -135,31 +230,42 @@ app.intent('Default Welcome Intent', (conv) => {
         }),
         display: 'DEFAULT',
         }));
-    conv.ask(new Suggestions(['Entrante','Plato principal','Segundo palto']));
+    conv.ask(new Suggestions(['Entrante','Plato principal','Segundo palto', 'Recetas cortas', 'Recetas largas']));
 });
 
 //Mostrar las recetas clasificadas como entrantes
 app.intent('Entrante', (conv) => {
-    conv.ask(`A quí podras encontrar diferectes platos para entrante.`);
+    conv.ask(new SimpleResponse({
+        text: 'Aquí podras encontrar diferentes platos para entrante.',
+        speech: '<speak><emphasis level="moderate">Aquí podras encontrar diferentes platos para entrante.</emphasis></speak>'
+    }))
     conv.ask(filterCarousel('Entrante'));
     conv.ask(new Suggestions('Volver'));
 });
 
 //Mostrar las recetas clasificadas como plato principal
 app.intent('PlatoPrincipal', (conv) => {
-    conv.ask(`A quí podras encontrar diferectes platos para plato principal.`);
+    conv.ask(new SimpleResponse({
+        text: 'Aquí podras encontrar diferectes platos para plato principal.',
+        speech: '<speak><emphasis level="moderate">Aquí podras encontrar diferectes platos para plato principal.</emphasis></speak>'
+    }))
     conv.ask(filterCarousel('Plato principal'));
     conv.ask(new Suggestions('Volver'));
 });
 
 //Mostrar las recetas clasificadas como segundo plato
 app.intent('SegundoPalto', (conv) => {
-    conv.ask(`A quí podras encontrar diferectes platos para segundo plato.`);
+    conv.ask(new SimpleResponse({
+        text: 'Aquí podras encontrar diferentes platos para segundo plato.',
+        speech: '<speak><emphasis level="moderate">Aquí podras encontrar diferentes platos para segundo plato.</emphasis></speak>'
+    }))
     conv.ask(filterCarousel('Segundo palto'));
     conv.ask(new Suggestions('Volver'));
 });
 
+//Muestra a través de una BasicCard la receta en cuestión, para más información hemos añadido un LinkOutSuggestion
 app.intent('Receta', (conv, params, option) => {
+    //Recibe un parametro de entrada
     if(params.receta){
         let receta = getReceta(params.receta);
         conv.ask(`La receta que ha buscado es: ` + params.receta );
@@ -180,13 +286,9 @@ app.intent('Receta', (conv, params, option) => {
             }));
             conv.ask(new LinkOutSuggestion({name: 'Receta url', url: receta.url}))
         }
-    }else{
-        conv.ask(`Lo sentimos, no encontramos la receta que desea buscar`);
-    }
-    if(option){
-        let receta = getReceta(option);
-        conv.ask(`La receta que ha buscado es: ` + option);
-        console.log(option);
+    }else if(option){ //Recibe una posición de Carousel a través de un evento de DialogFlow
+        let receta = getReceta(items[option].title);
+        conv.ask(`La receta que ha buscado es: ` + items[option].title);
         if(receta==""){
             conv.ask(`Lo sentimos, no encontramos la receta que desea buscar`);
         }else{
@@ -210,5 +312,24 @@ app.intent('Receta', (conv, params, option) => {
     conv.ask(new Suggestions('Volver'));
 });
 
+//Muestra recetas con un tiempo mayor a 30 minutos en un Carousel
+app.intent('RecetasLargas', (conv) => {
+    conv.ask(new SimpleResponse({
+        text: 'Aquí podras encontrar diferentes recetas largas.',
+        speech: '<speak><emphasis level="moderate">Aquí podras encontrar diferentes recetas largas.</emphasis></speak>'
+    }))
+    conv.ask(filterCarouselLongTime(30));
+    conv.ask(new Suggestions('Volver'));
+});
+
+//Muestra recetas con un tiempo menor o igual a 30 minutos en un Carousel
+app.intent('RecetasCortas', (conv) => {
+    conv.ask(new SimpleResponse({
+        text: 'Aquí podras encontrar diferentes recetas cortas.',
+        speech: '<speak><emphasis level="moderate">Aquí podras encontrar diferentes recetas cortas</emphasis></speak>'
+    }))
+    conv.ask(filterCarouselShortTime(30));
+    conv.ask(new Suggestions('Volver'));
+});
 
 exports.fulfillment = functions.https.onRequest(app);
