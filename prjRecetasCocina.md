@@ -37,4 +37,4 @@ Institution: ESCUELAS UNIVERSITARIAS GUIMBERNAT, UAB.
 
 © Diego Arnanz Alvaro, Escola Universitaria Gimbernat y Tomàs Cerdà.
 
-LICENSED UNDER THE [MIT LICENSE](LICENSE). The making and distributing of closed-source versions is allowed.
+LICENSED UNDER THE [MIT LICENSE](./public/license/LICENSE.txt). The making and distributing of closed-source versions is allowed.
